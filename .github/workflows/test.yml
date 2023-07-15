@@ -1,0 +1,18 @@
+name: test every commit
+on:
+  - push
+  - pull_request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.19.x
+      - run: go test -v -race
+      - run: go test -v -race ./nip04
+      - run: go test -v -race ./nip13
+      - run: go test -v -race ./nip19
+      - run: go test -v -race ./nip26
