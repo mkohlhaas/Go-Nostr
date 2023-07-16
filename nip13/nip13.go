@@ -1,3 +1,5 @@
+// TO_VIEW
+
 // Package nip13 implements NIP-13
 // See https://github.com/nostr-protocol/nips/blob/master/13.md for details.
 package nip13

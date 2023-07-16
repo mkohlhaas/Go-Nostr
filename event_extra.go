@@ -1,3 +1,5 @@
+// TO_VIEW
+
 package nostr
 
 // SetExtra sets an out-of-the-spec value under the given key into the event object.

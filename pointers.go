@@ -1,3 +1,5 @@
+// TO_VIEW
+
 package nostr
 
 type ProfilePointer struct {

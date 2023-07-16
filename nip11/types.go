@@ -1,3 +1,5 @@
+// TO_VIEW
+
 package nip11
 
 type RelayInformationDocument struct {

@@ -1,3 +1,5 @@
+// TO_VIEW
+
 package nip10
 
 import "github.com/nbd-wtf/go-nostr"

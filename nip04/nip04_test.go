@@ -1,3 +1,5 @@
+// TO_VIEW
+
 package nip04
 
 import (
