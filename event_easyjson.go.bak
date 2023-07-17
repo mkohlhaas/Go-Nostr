@@ -4,6 +4,7 @@ package nostr
 
 import (
 	json "encoding/json"
+
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
@@ -26,9 +27,10 @@ func easyjsonF642ad3eDecodeGithubComNbdWtfGoNostr(in *jlexer.Lexer, out *Event) 
 		in.Skip()
 		return
 	}
+	out.extra = make(map[string]any)
 	in.Delim('{')
 	for !in.IsDelim('}') {
-		key := in.UnsafeFieldName(false)
+		key := in.UnsafeFieldName(true)
 		in.WantColon()
 		if in.IsNull() {
 			in.Skip()
@@ -37,13 +39,13 @@ func easyjsonF642ad3eDecodeGithubComNbdWtfGoNostr(in *jlexer.Lexer, out *Event) 
 		}
 		switch key {
 		case "id":
-			out.ID = string(in.String())
+			out.ID = in.String()
 		case "pubkey":
-			out.PubKey = string(in.String())
+			out.PubKey = in.String()
 		case "created_at":
 			out.CreatedAt = Timestamp(in.Int64())
 		case "kind":
-			out.Kind = int(in.Int())
+			out.Kind = in.Int()
 		case "tags":
 			if in.IsNull() {
 				in.Skip()
@@ -52,7 +54,7 @@ func easyjsonF642ad3eDecodeGithubComNbdWtfGoNostr(in *jlexer.Lexer, out *Event) 
 				in.Delim('[')
 				if out.Tags == nil {
 					if !in.IsDelim(']') {
-						out.Tags = make(Tags, 0, 2)
+						out.Tags = make(Tags, 0, 7)
 					} else {
 						out.Tags = Tags{}
 					}
@@ -68,7 +70,7 @@ func easyjsonF642ad3eDecodeGithubComNbdWtfGoNostr(in *jlexer.Lexer, out *Event) 
 						in.Delim('[')
 						if v1 == nil {
 							if !in.IsDelim(']') {
-								v1 = make(Tag, 0, 4)
+								v1 = make(Tag, 0, 5)
 							} else {
 								v1 = Tag{}
 							}
@@ -89,11 +91,11 @@ func easyjsonF642ad3eDecodeGithubComNbdWtfGoNostr(in *jlexer.Lexer, out *Event) 
 				in.Delim(']')
 			}
 		case "content":
-			out.Content = string(in.String())
+			out.Content = in.String()
 		case "sig":
-			out.Sig = string(in.String())
+			out.Sig = in.String()
 		default:
-			in.SkipRecursive()
+			out.extra[key] = in.Interface()
 		}
 		in.WantComma()
 	}
@@ -102,6 +104,7 @@ func easyjsonF642ad3eDecodeGithubComNbdWtfGoNostr(in *jlexer.Lexer, out *Event) 
 		in.Consumed()
 	}
 }
+
 func easyjsonF642ad3eEncodeGithubComNbdWtfGoNostr(out *jwriter.Writer, in Event) {
 	out.RawByte('{')
 	first := true
@@ -109,12 +112,12 @@ func easyjsonF642ad3eEncodeGithubComNbdWtfGoNostr(out *jwriter.Writer, in Event)
 	{
 		const prefix string = ",\"id\":"
 		out.RawString(prefix[1:])
-		out.String(string(in.ID))
+		out.String(in.ID)
 	}
 	{
 		const prefix string = ",\"pubkey\":"
 		out.RawString(prefix)
-		out.String(string(in.PubKey))
+		out.String(in.PubKey)
 	}
 	{
 		const prefix string = ",\"created_at\":"
@@ -124,7 +127,7 @@ func easyjsonF642ad3eEncodeGithubComNbdWtfGoNostr(out *jwriter.Writer, in Event)
 	{
 		const prefix string = ",\"kind\":"
 		out.RawString(prefix)
-		out.Int(int(in.Kind))
+		out.Int(in.Kind)
 	}
 	{
 		const prefix string = ",\"tags\":"
@@ -156,12 +159,18 @@ func easyjsonF642ad3eEncodeGithubComNbdWtfGoNostr(out *jwriter.Writer, in Event)
 	{
 		const prefix string = ",\"content\":"
 		out.RawString(prefix)
-		out.String(string(in.Content))
+		out.String(in.Content)
 	}
 	{
 		const prefix string = ",\"sig\":"
 		out.RawString(prefix)
-		out.String(string(in.Sig))
+		out.String(in.Sig)
+	}
+	{
+		for key, value := range in.extra {
+			out.RawString(",\"" + key + "\":")
+			out.Raw(json.Marshal(value))
+		}
 	}
 	out.RawByte('}')
 }

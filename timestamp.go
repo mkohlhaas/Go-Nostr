@@ -1,5 +1,3 @@
-// TO_VIEW
-
 package nostr
 
 import "time"

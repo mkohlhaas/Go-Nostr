@@ -1,5 +1,3 @@
-// TO_VIEW
-
 package nostr
 
 import (
@@ -14,10 +12,15 @@ type Tag []string
 
 // StartsWith checks if a tag contains a prefix.
 // for example,
+//
 //	["p", "abcdef...", "wss://relay.com"]
+//
 // would match against
+//
 //	["p", "abcdef..."]
+//
 // or even
+//
 //	["p", "abcdef...", "wss://"]
 func (tag Tag) StartsWith(prefix []string) bool {
 	prefixLen := len(prefix)
@@ -35,25 +38,27 @@ func (tag Tag) StartsWith(prefix []string) bool {
 	return strings.HasPrefix(tag[prefixLen-1], prefix[prefixLen-1])
 }
 
-func (tag Tag) Key() string {
+func (tag Tag) Key() (key string) {
 	if len(tag) > 0 {
 		return tag[0]
 	}
-	return ""
+	return
 }
 
-func (tag Tag) Value() string {
+func (tag Tag) Value() (value string) {
 	if len(tag) > 1 {
 		return tag[1]
 	}
-	return ""
+	return
 }
 
-func (tag Tag) Relay() string {
-	if (tag[0] == "e" || tag[0] == "p") && len(tag) > 2 {
+// recommended relay
+func (tag Tag) Relay() (relay string) {
+	key := tag.Key()
+	if (key == "e" || key == "p") && len(tag) > 2 {
 		return NormalizeURL(tag[2])
 	}
-	return ""
+	return
 }
 
 type Tags []Tag
@@ -102,7 +107,7 @@ func (tags Tags) FilterOut(tagPrefix []string) Tags {
 }
 
 // AppendUnique appends a tag if it doesn't exist yet, otherwise does nothing.
-// the uniqueness comparison is done based only on the first 2 elements of the tag.
+// The uniqueness comparison is done based only on the first 2 elements of the tag.
 func (tags Tags) AppendUnique(tag Tag) Tags {
 	n := len(tag)
 	if n > 2 {
@@ -128,21 +133,28 @@ func (t *Tags) Scan(src any) error {
 		return errors.New("couldn't scan tags, it's not a json string")
 	}
 
-	json.Unmarshal(jtags, &t)
+	if err := json.Unmarshal(jtags, &t); err != nil {
+		return errors.New("couldn't scan tags, it is a malformed json string")
+	}
+
 	return nil
 }
 
-func (tags Tags) ContainsAny(tagName string, values []string) bool {
+func (tags Tags) Contains(tagName string, values []string) bool {
+	if tagName == "" {
+		return false
+	}
+
 	for _, tag := range tags {
 		if len(tag) < 2 {
 			continue
 		}
 
-		if tag[0] != tagName {
+		if tag.Key() != tagName {
 			continue
 		}
 
-		if slices.Contains(values, tag[1]) {
+		if slices.Contains(values, tag.Value()) {
 			return true
 		}
 	}
@@ -151,27 +163,29 @@ func (tags Tags) ContainsAny(tagName string, values []string) bool {
 }
 
 // Marshal Tag. Used for Serialization so string escaping should be as in RFC8259.
-func (tag Tag) marshalTo(dst []byte) []byte {
+func (tag Tag) MarshalTo(dst []byte) []byte {
 	dst = append(dst, '[')
+
 	for i, s := range tag {
 		if i > 0 {
 			dst = append(dst, ',')
 		}
 		dst = escapeString(dst, s)
 	}
+
 	dst = append(dst, ']')
 	return dst
 }
 
 // MarshalTo appends the JSON encoded byte of Tags as [][]string to dst.
 // String escaping is as described in RFC8259.
-func (tags Tags) marshalTo(dst []byte) []byte {
+func (tags Tags) MarshalTo(dst []byte) []byte {
 	dst = append(dst, '[')
 	for i, tag := range tags {
 		if i > 0 {
 			dst = append(dst, ',')
 		}
-		dst = tag.marshalTo(dst)
+		dst = tag.MarshalTo(dst)
 	}
 	dst = append(dst, ']')
 	return dst

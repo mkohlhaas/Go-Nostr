@@ -1,5 +1,3 @@
-// TO_VIEW
-
 package nostr
 
 import (
@@ -19,8 +17,8 @@ type ProfileMetadata struct {
 }
 
 func ParseMetadata(event Event) (*ProfileMetadata, error) {
-	if event.Kind != 0 {
-		return nil, fmt.Errorf("event %s is kind %d, not 0", event.ID, event.Kind)
+	if event.Kind != KindSetMetadata {
+		return nil, fmt.Errorf("event %s is kind %d, not of kind set metadata", event.ID, event.Kind)
 	}
 
 	var meta ProfileMetadata

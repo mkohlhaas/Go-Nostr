@@ -1,5 +1,3 @@
-// TO_VIEW
-
 package nostr
 
 import (
@@ -9,6 +7,7 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
+// for every 'a' in 'as' there must be a 'b' in 'bs'
 func similar[E constraints.Ordered](as, bs []E) bool {
 	if len(as) != len(bs) {
 		return false
@@ -30,6 +29,7 @@ func similar[E constraints.Ordered](as, bs []E) bool {
 	return true
 }
 
+// Does needle begin with one of the prefixes in the haystack ?
 func containsPrefixOf(haystack []string, needle string) bool {
 	for _, hay := range haystack {
 		if strings.HasPrefix(needle, hay) {
@@ -79,6 +79,8 @@ func escapeString(dst []byte, s string) []byte {
 	return dst
 }
 
+// not used
+// better use functions from https://pkg.go.dev/golang.org/x/exp/slices
 func InsertEventIntoDescendingList(sortedArray []*Event, event *Event) []*Event {
 	size := len(sortedArray)
 	start := 0
@@ -133,8 +135,8 @@ func InsertEventIntoDescendingList(sortedArray []*Event, event *Event) []*Event 
 	return sortedArray
 }
 
-func IsValidRelayURL(u string) bool {
-	parsed, err := url.Parse(u)
+func IsValidRelayURL(rawUrl string) bool {
+	parsed, err := url.Parse(rawUrl)
 	if err != nil {
 		return false
 	}

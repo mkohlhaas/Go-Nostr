@@ -51,7 +51,7 @@ type WithLabel string
 
 func (_ WithLabel) IsSubscriptionOption() {}
 
-var _ SubscriptionOption = (WithLabel)("")
+var _ SubscriptionOption = WithLabel("")
 
 // GetID return the Nostr subscription ID as given to the Relay
 // it is a concatenation of the label and a serial number.

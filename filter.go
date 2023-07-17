@@ -47,6 +47,8 @@ func (ef Filter) Matches(event *Event) bool {
 		return false
 	}
 
+  // TODO: isn't containsPrefixOf used here as slices.Contains?
+  // https://pkg.go.dev/golang.org/x/exp/slices#Contains
 	if ef.IDs != nil && !containsPrefixOf(ef.IDs, event.ID) {
 		return false
 	}
@@ -60,7 +62,7 @@ func (ef Filter) Matches(event *Event) bool {
 	}
 
 	for f, v := range ef.Tags {
-		if v != nil && !event.Tags.ContainsAny(f, v) {
+		if v != nil && !event.Tags.Contains(f, v) {
 			return false
 		}
 	}

@@ -1,5 +1,3 @@
-// TO_VIEW
-
 //go:build debug
 
 package nostr
