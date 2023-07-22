@@ -1,5 +1,3 @@
-// TO_VIEW
-
 package nostr
 
 import (
@@ -37,17 +35,12 @@ func (eff Filters) Match(event *Event) bool {
 	return false
 }
 
-func (ef Filter) String() string {
-	j, _ := json.Marshal(ef)
-	return string(j)
-}
-
 func (ef Filter) Matches(event *Event) bool {
 	if event == nil {
 		return false
 	}
 
-  // TODO: isn't containsPrefixOf used here as slices.Contains?
+  // TODO: isn't containsPrefixOf used here them same as slices.Contains?
   // https://pkg.go.dev/golang.org/x/exp/slices#Contains
 	if ef.IDs != nil && !containsPrefixOf(ef.IDs, event.ID) {
 		return false

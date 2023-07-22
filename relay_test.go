@@ -1,5 +1,3 @@
-// TO_VIEW
-
 package nostr
 
 import (
@@ -227,6 +225,7 @@ func parseEventMessage(t *testing.T, raw []json.RawMessage) Event {
 	return event
 }
 
+// actually not used
 func parseSubscriptionMessage(t *testing.T, raw []json.RawMessage) (subid string, filters []Filter) {
 	t.Helper()
 	if len(raw) < 3 {

@@ -1,5 +1,3 @@
-// TO_VIEW
-
 package nostr
 
 import (
@@ -14,17 +12,15 @@ import (
 type SimplePool struct {
 	Relays  map[string]*Relay
 	Context context.Context
-
-	mutex  sync.Mutex
-	cancel context.CancelFunc
+	mutex   sync.Mutex
+	cancel  context.CancelFunc
 }
 
 func NewSimplePool(ctx context.Context) *SimplePool {
 	ctx, cancel := context.WithCancel(ctx)
 
 	return &SimplePool{
-		Relays: make(map[string]*Relay),
-
+		Relays:  make(map[string]*Relay),
 		Context: ctx,
 		cancel:  cancel,
 	}
@@ -43,7 +39,7 @@ func (pool *SimplePool) EnsureRelay(url string) (*Relay, error) {
 	} else {
 		var err error
 		// we use this ctx here so when the pool dies everything dies
-		ctx, cancel := context.WithTimeout(pool.Context, time.Second*15)
+		ctx, cancel := context.WithTimeout(pool.Context, 15*time.Second)
 		defer cancel()
 		if relay, err = RelayConnect(ctx, nm); err != nil {
 			return nil, fmt.Errorf("failed to connect: %w", err)
@@ -61,8 +57,7 @@ func (pool *SimplePool) SubMany(ctx context.Context, urls []string, filters Filt
 	seenAlready := xsync.NewMapOf[bool]()
 
 	pending := xsync.Counter{}
-	initial := len(urls)
-	pending.Add(int64(initial))
+	pending.Add(int64(len(urls)))
 	for _, url := range urls {
 		go func(nm string) {
 			relay, err := pool.EnsureRelay(nm)

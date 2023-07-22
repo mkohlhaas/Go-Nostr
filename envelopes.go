@@ -1,5 +1,3 @@
-// TO_VIEW
-
 package nostr
 
 import (
@@ -55,21 +53,12 @@ type Envelope interface {
 	MarshalJSON() ([]byte, error)
 }
 
+//////////// EventEnvelope /////////////////////////////////////
+
 type EventEnvelope struct {
 	SubscriptionID *string
 	Event
 }
-
-var (
-	_ Envelope = (*EventEnvelope)(nil)
-	_ Envelope = (*ReqEnvelope)(nil)
-	_ Envelope = (*CountEnvelope)(nil)
-	_ Envelope = (*NoticeEnvelope)(nil)
-	_ Envelope = (*EOSEEnvelope)(nil)
-	_ Envelope = (*CloseEnvelope)(nil)
-	_ Envelope = (*OKEnvelope)(nil)
-	_ Envelope = (*AuthEnvelope)(nil)
-)
 
 func (_ EventEnvelope) Label() string { return "EVENT" }
 
@@ -97,6 +86,8 @@ func (v EventEnvelope) MarshalJSON() ([]byte, error) {
 	w.RawString(`]`)
 	return w.BuildBytes()
 }
+
+//////////// ReqEnvelope /////////////////////////////////////
 
 type ReqEnvelope struct {
 	SubscriptionID string
@@ -136,6 +127,8 @@ func (v ReqEnvelope) MarshalJSON() ([]byte, error) {
 	return w.BuildBytes()
 }
 
+//////////// CountEnvelope /////////////////////////////////////
+
 type CountEnvelope struct {
 	SubscriptionID string
 	Filters
@@ -174,6 +167,8 @@ func (v CountEnvelope) MarshalJSON() ([]byte, error) {
 	return w.BuildBytes()
 }
 
+//////////// NoticeEnvelope /////////////////////////////////////
+
 type NoticeEnvelope string
 
 func (_ NoticeEnvelope) Label() string { return "NOTICE" }
@@ -197,6 +192,8 @@ func (v NoticeEnvelope) MarshalJSON() ([]byte, error) {
 	w.RawString(`]`)
 	return w.BuildBytes()
 }
+
+//////////// EOSEEnvelope /////////////////////////////////////
 
 type EOSEEnvelope string
 
@@ -222,6 +219,8 @@ func (v EOSEEnvelope) MarshalJSON() ([]byte, error) {
 	return w.BuildBytes()
 }
 
+//////////// CloseEnvelope /////////////////////////////////////
+
 type CloseEnvelope string
 
 func (_ CloseEnvelope) Label() string { return "CLOSE" }
@@ -245,6 +244,8 @@ func (v CloseEnvelope) MarshalJSON() ([]byte, error) {
 	w.RawString(`]`)
 	return w.BuildBytes()
 }
+
+//////////// OKEnvelope /////////////////////////////////////
 
 type OKEnvelope struct {
 	EventID string
@@ -287,6 +288,8 @@ func (v OKEnvelope) MarshalJSON() ([]byte, error) {
 	return w.BuildBytes()
 }
 
+//////////// AuthEnvelope /////////////////////////////////////
+
 type AuthEnvelope struct {
 	Challenge *string
 	Event     Event
@@ -319,3 +322,15 @@ func (v AuthEnvelope) MarshalJSON() ([]byte, error) {
 	w.RawString(`]`)
 	return w.BuildBytes()
 }
+
+// Check Envelope interface for all envelopes.
+var (
+	_ Envelope = (*EventEnvelope)(nil)
+	_ Envelope = (*ReqEnvelope)(nil)
+	_ Envelope = (*CountEnvelope)(nil)
+	_ Envelope = (*NoticeEnvelope)(nil)
+	_ Envelope = (*EOSEEnvelope)(nil)
+	_ Envelope = (*CloseEnvelope)(nil)
+	_ Envelope = (*OKEnvelope)(nil)
+	_ Envelope = (*AuthEnvelope)(nil)
+)

@@ -1,5 +1,3 @@
-// TO_VIEW
-
 package nostr
 
 import (
@@ -41,7 +39,7 @@ func (s Status) String() string {
 
 type Relay struct {
 	URL           string
-	RequestHeader http.Header // e.g. for origin header
+	RequestHeader http.Header // e.g. for origin header; see example in test
 
 	Connection    *Connection
 	Subscriptions *xsync.MapOf[string, *Subscription]
@@ -54,7 +52,7 @@ type Relay struct {
 	notices                       chan string // NIP-01 NOTICEs
 	okCallbacks                   *xsync.MapOf[string, func(bool, *string)]
 	writeQueue                    chan writeRequest
-	subscriptionChannelCloseQueue chan *Subscription
+	subscriptionChannelCloseQueue chan *Subscription // actually not used
 
 	// custom things that aren't often used
 	//
@@ -514,7 +512,7 @@ func (r *Relay) QuerySync(ctx context.Context, filter Filter, opts ...Subscripti
 	defer sub.Unsub()
 
 	if _, ok := ctx.Deadline(); !ok {
-		// if no timeout is set, force it to 3 seconds
+		// if no timeout is set, force it to 7 seconds
 		var cancel context.CancelFunc
 		ctx, cancel = context.WithTimeout(ctx, 7*time.Second)
 		defer cancel()

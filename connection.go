@@ -1,5 +1,3 @@
-// TO_VIEW
-
 package nostr
 
 import (
@@ -141,8 +139,7 @@ func (c *Connection) ReadMessage(ctx context.Context) ([]byte, error) {
 			if err := c.controlHandler(h, c.reader); err != nil {
 				return nil, fmt.Errorf("failed to handle control frame: %w", err)
 			}
-		} else if h.OpCode == ws.OpBinary ||
-			h.OpCode == ws.OpText {
+		} else if h.OpCode == ws.OpBinary || h.OpCode == ws.OpText {
 			break
 		}
 

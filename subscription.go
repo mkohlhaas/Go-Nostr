@@ -1,5 +1,3 @@
-// TO_VIEW
-
 package nostr
 
 import (
@@ -34,10 +32,11 @@ type Subscription struct {
 	cancel             context.CancelFunc
 }
 
-type EventMessage struct {
-	Event Event
-	Relay string
-}
+// NOT USED
+// type EventMessage struct {
+// 	Event Event
+// 	Relay string
+// }
 
 // When instantiating relay connections, some options may be passed.
 // SubscriptionOption is the type of the argument passed for that.
@@ -53,7 +52,7 @@ func (_ WithLabel) IsSubscriptionOption() {}
 
 var _ SubscriptionOption = WithLabel("")
 
-// GetID return the Nostr subscription ID as given to the Relay
+// GetID returns the Nostr subscription ID as given to the Relay
 // it is a concatenation of the label and a serial number.
 func (sub *Subscription) GetID() string {
 	return sub.label + ":" + strconv.Itoa(sub.counter)
